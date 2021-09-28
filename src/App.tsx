@@ -1,18 +1,25 @@
 import React from 'react';
 import './App.css';
-import styled from 'styled-components';
+import {ChampionList} from "./components/champion-list";
+import styled from "styled-components";
+import {Router, Link} from "@reach/router";
 
-const ChampName = styled.div `
-    padding: 5px;
+
+const AppDiv = styled.div`
+    font-family: Arial;
+    text-transform: uppercase;
+    font-weight: 600;
 `
 
 function App() {
-  return (
-    <div className="App">
-      List of Champs
-        <ChampName>Hello</ChampName>
-    </div>
-  );
+    return (
+        <AppDiv className="App">
+            <Link to="/champs">Champs</Link>
+            <Router>
+                <ChampionList path="/champs"></ChampionList>
+            </Router>
+        </AppDiv>
+    );
 }
 
 export default App;
