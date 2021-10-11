@@ -17,7 +17,7 @@ const CardDiv = styled.div`
 export const ChampCard = (props: {champ: Champ}) => {
     return (
         <CardDiv>
-            <ChampImg src={`https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/${props.champ.id}.png`}></ChampImg>
+            <ChampImg src={`https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/${props.champ.key}.png`}></ChampImg>
             {props.champ.name}
         </CardDiv>
     );

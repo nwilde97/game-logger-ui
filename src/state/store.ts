@@ -1,11 +1,11 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
-import counterReducer from './counterSlice';
-import ddragonReducer from "./ddragon";
+import champions from "./champions";
+import matchups from "./matchups";
 
 export const store = configureStore({
   reducer: {
-    counter: counterReducer,
-    ddragon: ddragonReducer
+    champions,
+    matchups
   },
 });
 
