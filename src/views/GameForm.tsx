@@ -6,6 +6,11 @@ import {ImagePicker} from "../components/ImagePicker";
 import {RunePicker} from "../components/RunePicker";
 import {ItemPicker} from "../components/ItemPicker";
 import {SkillPicker} from "../components/SkillPicker";
+import {RouteComponentProps} from "@reach/router";
+
+export interface GameFormProps extends RouteComponentProps {
+
+}
 
 export const GameForm = () => {
     return (
@@ -16,7 +21,7 @@ export const GameForm = () => {
                 <Champion src='https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/92.png'></Champion>
             </Champs>
             <Question>How difficult was the matchup?</Question>
-            <StarRanker></StarRanker>
+            <StarRanker onChange={(num)=> console.log(num)}></StarRanker>
             <Question>Summoner Spells?</Question>
             <Summs>
                 <ImagePicker images={summonerSpells}></ImagePicker>

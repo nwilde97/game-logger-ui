@@ -1,11 +1,13 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import champions from "./champions";
 import matchups from "./matchups";
+import session from "./session";
 
 export const store = configureStore({
   reducer: {
     champions,
-    matchups
+    matchups,
+    session
   },
 });
 

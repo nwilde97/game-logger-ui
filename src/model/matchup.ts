@@ -8,3 +8,11 @@ export interface MatchupList {
        }[];
     }[];
 }
+
+export interface Matchup {
+    author: string;
+    champion: string;
+    opponent: string;
+    rating: number;
+    comments: string;
+}

@@ -9,6 +9,10 @@ body {
   color: #c8c8c8bf;
 }
 
+a, a:visited, a:active{
+  color: inherit;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
