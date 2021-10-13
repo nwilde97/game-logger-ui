@@ -5,8 +5,9 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #1E313B;
-  color: #c8c8c8bf;
+  color: hsl(51,36%,10%);
+  background: linear-gradient(to right, hsl(51,36%,39%) 0%, hsl(51,36%,64%) 10%, hsl(51,36%,64%) 20%, hsl(51,36%,75%) 50%,hsl(51,36%,64%) 80%,hsl(51,36%,64%) 90%,hsl(51,36%,39%) 100%);
+
 }
 
 a, a:visited, a:active{

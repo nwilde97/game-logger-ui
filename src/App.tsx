@@ -12,14 +12,6 @@ import {Login} from "./views/Login";
 
 
 const AppDiv = styled.div`
-    font-family: Arial;
-    text-transform: uppercase;
-    font-weight: 600;
-    
-    & > a {
-        color: inherit;
-        margin: 10px;
-    }
 `
 
 // const Form = (props: RouteComponentProps) => <GameForm></GameForm>
