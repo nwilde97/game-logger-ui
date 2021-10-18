@@ -52,4 +52,5 @@ const Link = styled.a`
 const Instructions = styled.div`
     width: fit-content;
     margin: auto;
+    margin-top: 3%;
 `

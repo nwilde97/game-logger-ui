@@ -31,6 +31,7 @@ const Star = styled.div`
     display: inline-block;
     cursor: pointer;
     font-size: 36px;
+    text-shadow: 1px 1px 4px #282828;
     &:before {
         content: "\\2606";
     }

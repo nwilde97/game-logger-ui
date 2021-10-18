@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {RefObject, useEffect, useRef, useState} from 'react';
 import styled from "styled-components";
 import {Champ} from "../services/ddragon.service";
 import {useDispatch, useSelector} from "react-redux";
@@ -12,19 +12,24 @@ export const ChampPicker = (props: ChampPickerProps) => {
     const [selected, setSelected] = useState({image: ''});
     const [choicesVisible, setChoicesVisible] = useState(false);
     const change = (champ: Champ) => {
-        setSelected(champ);
+        setSelected({...champ});
         if(props.onChange) props.onChange(champ.key);
     };
+    useEffect(()=> {
+        if(choicesVisible) inputRef.current?.focus();
+    },[choicesVisible]);
+    const hide = () => {
+        setTimeout(()=> {
+            setChoicesVisible(false)
+        },100);
+    }
 
-    useEffect(()=>{
-        setChoicesVisible(false);
-    }, [selected]);
     const dispatch = useDispatch();
     const champs = useSelector(selectChamps);
     useEffect(()=> {
         if(!champs) dispatch(fetchChampList());
     }, [champs, dispatch]);
-
+    const inputRef:RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null);
     return (
         <Container>
             {selected.image
@@ -39,6 +44,9 @@ export const ChampPicker = (props: ChampPickerProps) => {
                     )}
                 </Choices>
             }
+            <Hidden>
+                <input ref={inputRef} onBlur={()=>hide()}/>
+            </Hidden>
         </Container>
     )
 }
@@ -53,20 +61,27 @@ const Empty = styled.div`
     font-size: 36px;
     line-height: 50px;
     text-align: center;
-    background-color: #4E616C;
+    background-color: hsl(51,36%,85%);
     cursor: pointer;
 `
 
 const Choices = styled.div`
     position: absolute;
     top: 50px;
-    display: flex;
     z-index: 1;
-    width: 500px;
+    width: 700px;
 `
 
 const Choice = styled.img`
     height: 50px;
     width: 50px;
     cursor: pointer;
+`
+
+const Hidden = styled.div`
+    position: fixed;
+    top: -100px;
+    left: 0px;
+    height: 1px;
+    width: 1px;
 `

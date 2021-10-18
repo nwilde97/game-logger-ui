@@ -43,6 +43,9 @@ export const MatchupPane = (props: RouteComponentProps) => {
             navigate(`/author/${author}`);
         }
     }
+    const cancel = () => {
+        navigate("/");
+    }
     return (
         <Form>
             <Header>Matchup</Header>
@@ -60,7 +63,7 @@ export const MatchupPane = (props: RouteComponentProps) => {
                   <Tips defaultValue={data.comments} onChange={(e)=>data.comments = e.target.value}></Tips>
                   <Buttons>
                     <button onClick={save}>Save</button>
-                      {/*<button onClick={cancel}>Cancel</button>*/}
+                      <button onClick={cancel}>Cancel</button>
                   </Buttons>
                 </Fragment>
                     :
@@ -71,11 +74,14 @@ export const MatchupPane = (props: RouteComponentProps) => {
     )
 }
 const Form = styled.div`
-  margin: 50px;
+    margin: auto;
+  margin-top: 100px;
+  width: fit-content;
+  text-shadow: none;
+  -webkit-text-stroke: initial;
 `
 
 const Header = styled.h1`
-    color: #e0e0e0;
     font-size: 24px;
 `
 
@@ -89,7 +95,6 @@ const Champion = styled.img`
 `
 
 const Question = styled.div`
-    color: #e0e0e0;
     font-size: 24px;
     margin-top: 15px;
     margin-bottom: 10px;
@@ -98,11 +103,11 @@ const Question = styled.div`
 const Tips = styled.textarea`
   height: 200px;
   width: 600px;
-  background-color: #4E616C;
-  color: #fff;
-  font-family: inherit;
+  background-color: hsl(51,36%,85%);
+  font-family: Helvetica;
   font-size: 15px;
-  font-weight: bold;
+    -webkit-text-stroke: initial;
+  text-shadow: none;
 `
 
 const Comments = styled.div`
@@ -112,5 +117,12 @@ const Comments = styled.div`
 `
 
 const Buttons = styled.div`
-    
+    & > button {
+        border-radius: 10px;
+        border: solid hsl(36deg 31% 54%) 2px;
+        background-color: hsl(36deg 31% 64%);
+        margin: 5px;
+        font-size: 24px;
+        font-family: inherit;
+    }
 `

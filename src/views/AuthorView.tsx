@@ -1,29 +1,40 @@
 import {Link, RouteComponentProps, useParams} from "@reach/router";
 import styled from "styled-components";
 import {useDispatch, useSelector} from "react-redux";
-import React, {useEffect} from "react";
+import React, {Fragment, useEffect} from "react";
 import {fetchAuthorMatchups, selectAuthorMatchups} from "../state/matchups";
 import {RootState} from "../state/store";
 import {fetchChampList, selectChamps} from "../state/champions";
-import {PencilIcon} from "@primer/octicons-react";
+import {EyeIcon, PencilIcon,} from "@primer/octicons-react";
+import {selectSessionUser} from "../state/session";
 
 export interface AuthorViewProps extends RouteComponentProps {
 
 }
 
 export const AuthorView = (props: AuthorViewProps) => {
-    const {author}: {author: string} = useParams();
+    const params: {author?: string} = useParams();
     const dispatch = useDispatch();
+    const user = useSelector(selectSessionUser);
+    const author = params?.author || user!.username;
     const matchups = useSelector((state: RootState)=> selectAuthorMatchups(state, author));
     const champs = useSelector(selectChamps);
     useEffect(()=> {
         if(!matchups) dispatch(fetchAuthorMatchups(author));
-    }, [dispatch, matchups, author]);
+    }, [dispatch, matchups, author, user]);
     useEffect(()=> {
         if(!champs) dispatch(fetchChampList());
     }, [dispatch, champs]);
     return (
         <Container>
+            {user!.username === author
+                ?
+                <Header>
+                    <Link to={`/matchup/${user!.username}`}>Create New</Link>
+                    <div>Here are your log entries</div>
+                </Header>
+                : <div>{author}'s entries</div>
+            }
             <Matchups>
                 <Matchup>
                     <Cell></Cell>
@@ -39,7 +50,8 @@ export const AuthorView = (props: AuthorViewProps) => {
                 <Matchup key={`${matchup.champion}o${matchup.opponent}`}>
                     <Cell>
                         <Link to={`/matchup/${author}/${matchup.champion}/${matchup.opponent}`}>
-                            <PencilIcon size={24} />
+                            {(user!.username === author) && <PencilIcon size={24} />}
+                            {(user!.username !== author) && <EyeIcon size={24} />}
                         </Link>
                     </Cell>
                     <Cell>{champ?.name}</Cell>
@@ -61,14 +73,31 @@ export const AuthorView = (props: AuthorViewProps) => {
 }
 
 const Container = styled.div`
-    padding: 50px;
+    width: 60%;
+    margin: auto;
+    font-size: 30px;
+    margin-top: 75px;
+`
+
+const Header = styled.div`
+    & > a {
+        float: right;
+        padding: 5px 25px;
+        border-radius: 10px;
+        border: solid hsl(36deg 31% 54%) 2px;
+        background-color: hsl(36deg 31% 64%);
+        margin: 5px;
+        text-decoration: none;
+    }
 `
 
 const Matchups = styled.div`
+    clear: both;
     border: solid black thin;
-    width: 60%;
-    margin: auto;
     color: #111;
+    text-shadow: none;
+    font-family: Helvetica;
+    -webkit-text-stroke: initial;
     & > div:nth-child(even) {
         background-color: #eee;
     }
