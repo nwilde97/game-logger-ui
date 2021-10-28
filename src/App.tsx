@@ -22,6 +22,7 @@ import {MatchupPane} from "./views/MatchupPane";
 import {MatchupListView} from "./views/MatchupListView";
 import {Link, Router} from "@reach/router";
 import {ProfileView} from "./views/ProfileView";
+import {UsersView} from "./views/UsersView";
 
 function App() {
   const user = useSelector(selectSessionUser);
@@ -58,23 +59,23 @@ function App() {
           <Drawer variant="permanent" open={true}>
             <Toolbar/>
             <div>
-              <ListItem button component={Link} to={`/author/${user!.id}`}>
+              <ListItem button component={Link} to={`/`}>
                 <ListItemIcon>
                   <Assignment/>
                 </ListItemIcon>
                 <ListItemText primary="My Entries" color={"inherit"}/>
               </ListItem>
-              <ListItem button component={Link} to={`/author/demo-user`}>
+              {/*<ListItem button component={Link} to={`/champ/demo-user/23`}>*/}
+              {/*  <ListItemIcon>*/}
+              {/*    <Assignment/>*/}
+              {/*  </ListItemIcon>*/}
+              {/*  <ListItemText primary="Tryndamere Matchups"/>*/}
+              {/*</ListItem>*/}
+              <ListItem button component={Link} to={`/users`}>
                 <ListItemIcon>
                   <Assignment/>
                 </ListItemIcon>
-                <ListItemText primary="Fogged Matchups"/>
-              </ListItem>
-              <ListItem button component={Link} to={`/champ/demo-user/23`}>
-                <ListItemIcon>
-                  <Assignment/>
-                </ListItemIcon>
-                <ListItemText primary="Tryndamere Matchups"/>
+                <ListItemText primary="All Users"/>
               </ListItem>
             </div>
           </Drawer>
@@ -92,6 +93,7 @@ function App() {
               <MatchupListView path="/champ/:author/:champ"></MatchupListView>
               <AuthorView path="/author/:author"></AuthorView>
               <ProfileView path="/profile"></ProfileView>
+              <UsersView path="/users"></UsersView>
             </Router>
           </Box>
         </Box>

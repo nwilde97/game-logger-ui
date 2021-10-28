@@ -1,9 +1,10 @@
-import React, { Fragment } from "react";
+import React from "react";
 import {RouteComponentProps} from "@reach/router";
 import {useDispatch, useSelector} from "react-redux";
-import {saveUser, selectDiscordInfo, selectSessionUser, User} from "../state/session";
+import {saveUser, selectDiscordInfo, selectSessionUser} from "../state/session";
 import {Button, Container, Divider, InputAdornment, Paper, TextField, Typography} from "@mui/material";
 import {Facebook, Instagram, Tv, Twitter, YouTube} from "@mui/icons-material";
+import {User} from "../state/users";
 
 export interface ProfileViewProps extends RouteComponentProps {
 
@@ -30,7 +31,7 @@ export const ProfileView = (props:ProfileViewProps) => {
                    InputProps={{
                      startAdornment: (
                        <InputAdornment position="start">
-                         <Facebook />`
+                         <Facebook />
                        </InputAdornment>
                      ),
                    }} />

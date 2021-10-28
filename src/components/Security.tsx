@@ -2,6 +2,7 @@ import React, {Fragment, useEffect} from "react";
 import {Login} from "../views/Login";
 import {useDispatch, useSelector} from "react-redux";
 import {selectDiscordInfo, selectSessionUser, setDiscordInfo, updateLoggedInUser, verifyToken} from "../state/session";
+import {Box, Container, LinearProgress} from "@mui/material";
 
 export const Security = (props: any) => {
   const discord = useSelector(selectDiscordInfo);
@@ -24,10 +25,21 @@ export const Security = (props: any) => {
       dispatch(updateLoggedInUser(discord));
     }
   }, [discord, dispatch]);
-  console.log(user);
   return (
     <Fragment>
-      {user ? props.children : <Login/>}
+      {
+        discord && !user ? <Loading />
+      : user ? props.children : <Login/>
+      }
     </Fragment>
+  );
+}
+
+export const Loading = () => {
+  return (
+  <Container maxWidth={"sm"} sx={{marginTop: "20%"}}>
+    Please wait while the app loads...
+    <LinearProgress />
+  </Container>
   );
 }

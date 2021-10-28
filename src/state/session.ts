@@ -3,18 +3,7 @@ import {RootState} from "./store";
 import {navigate} from "@reach/router";
 import {API_URL} from "./matchups";
 import axios from "axios";
-
-export interface User {
-  id: string;
-  description?: string;
-  nickname: string;
-  facebook?: string;
-  twitter?: string;
-  instagram?: string;
-  twitch?: string;
-  youtube?: string;
-  email?: string;
-}
+import {User} from "./users";
 
 export interface DiscordInfo {
   id: string;
@@ -109,6 +98,11 @@ export const slice = createSlice({
       state.user = action.payload;
     }).addCase(saveUser.fulfilled, (state, action) => {
       state.user = action.payload;
+    }).addCase(updateLoggedInUser.rejected, (state) => {
+      state.discord = undefined;
+      state.user = undefined;
+      window.localStorage.removeItem("session");
+      navigate("/");
     })
   }
 });
