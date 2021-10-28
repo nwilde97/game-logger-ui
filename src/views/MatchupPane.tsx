@@ -1,5 +1,4 @@
 import React, {Fragment, useEffect} from 'react';
-import styled from "styled-components";
 import {navigate, RouteComponentProps, useParams} from "@reach/router";
 import {useDispatch, useSelector} from "react-redux";
 import {fetchAuthorMatchups, saveMatchup, selectAuthorMatchups} from "../state/matchups";
@@ -8,6 +7,8 @@ import {StarRanker} from "../components/StarRanker";
 import {fetchChampList, selectChamps} from "../state/champions";
 import {ChampPicker} from "../components/ChampPicker";
 import {selectSessionUser} from "../state/session";
+import {Box, Button, Container, Paper, TextField, Typography} from "@mui/material";
+import styled from "styled-components";
 
 export interface MatchupPaneProps extends RouteComponentProps {
 
@@ -33,96 +34,68 @@ export const MatchupPane = (props: RouteComponentProps) => {
         rating: matchup?.rating || 0,
         champion: matchup?.champion || '',
         opponent: matchup?.opponent || '',
-        author
+        author: user!.nickname
     }
     const save = async () => {
         if(!data.champion || !data.opponent){
             alert("Please complete the form");
         } else {
-            dispatch(saveMatchup(data));
+            dispatch(saveMatchup([author, data]));
             navigate(`/author/${author}`);
         }
     }
     const cancel = () => {
-        navigate("/");
+        navigate(-1);
     }
     return (
-        <Form>
-            <Header>Matchup</Header>
+      <Container maxWidth={"lg"}>
+        <Paper elevation={2} sx={{p:2}}>
+          <Question>Matchup</Question>
             <Champs>
                 {champion ? <Champion src={champion.image}></Champion> : <ChampPicker onChange={(c)=>data.champion = c}></ChampPicker>}
                 vs.
                 {opponent ? <Champion src={opponent.image}></Champion> : <ChampPicker onChange={(c)=>data.opponent = c}></ChampPicker>}
             </Champs>
             <Question>How difficult was the matchup?</Question>
-            <StarRanker rating={data.rating} onChange={(value)=>data.rating = value} readonly={user?.username !== author}></StarRanker>
+            <StarRanker rating={data.rating} onChange={(value)=>data.rating = value} readonly={user?.id !== author}></StarRanker>
             <Question>Tips for this matchup</Question>
             {
-                user?.username === author ?
+                user?.id === author ?
                 <Fragment>
-                  <Tips defaultValue={data.comments} onChange={(e)=>data.comments = e.target.value}></Tips>
-                  <Buttons>
-                    <button onClick={save}>Save</button>
-                      <button onClick={cancel}>Cancel</button>
-                  </Buttons>
+                  <TextField
+                    label="Tips..."
+                    placeholder="Tips..."
+                    multiline
+                    minRows={10}
+                    sx={{width:600}}
+                    defaultValue={data.comments} onChange={(e)=>data.comments = e.target.value}
+                  />
+                  <Box sx={{display: "flex", gap: 2, m: 5}}>
+                    <Button variant={"contained"} onClick={save}>Save</Button>
+                    <Button variant={"contained"} onClick={cancel}>Cancel</Button>
+                  </Box>
                 </Fragment>
                     :
                     <Comments>{data.comments}</Comments>
-
             }
-        </Form>
+        </Paper>
+      </Container>
     )
 }
-const Form = styled.div`
-    margin: auto;
-  margin-top: 100px;
-  width: fit-content;
-  text-shadow: none;
-  -webkit-text-stroke: initial;
-`
 
-const Header = styled.h1`
-    font-size: 24px;
-`
+const Question = (props: any) => {
+  return (<Typography variant={"h6"} sx={{mt:5, mb:3}}>{props.children}</Typography>)
+}
 
 const Champs = styled.div`
-    display: flex;
-    gap: 10px;
+  display: flex;
+  gap: 10px;
 `
 
-const Champion = styled.img`
-    
-`
-
-const Question = styled.div`
-    font-size: 24px;
-    margin-top: 15px;
-    margin-bottom: 10px;
-`
-
-const Tips = styled.textarea`
-  height: 200px;
-  width: 600px;
-  background-color: hsl(51,36%,85%);
-  font-family: Helvetica;
-  font-size: 15px;
-    -webkit-text-stroke: initial;
-  text-shadow: none;
-`
+const Champion = styled.img``
 
 const Comments = styled.div`
-    width: 600px;
-    font-size: 15px;
+  width: 600px;
+  font-size: 15px;
   font-weight: bold;
-`
-
-const Buttons = styled.div`
-    & > button {
-        border-radius: 10px;
-        border: solid hsl(36deg 31% 54%) 2px;
-        background-color: hsl(36deg 31% 64%);
-        margin: 5px;
-        font-size: 24px;
-        font-family: inherit;
-    }
 `

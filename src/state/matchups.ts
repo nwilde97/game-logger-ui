@@ -2,9 +2,9 @@ import {Matchup, MatchupList} from "../model/matchup";
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import {RootState} from "./store";
 
-const URL = 'https://e76jydntqk.execute-api.us-west-2.amazonaws.com/v1';
+export const API_URL = 'https://e76jydntqk.execute-api.us-west-2.amazonaws.com/v1';
 
-// const URL = 'http://localhost:8080';
+// export const API_URL = 'http://localhost:8080';
 
 export interface MatchupsState {
     matchups: {
@@ -18,7 +18,7 @@ const initialState: MatchupsState = {
 
 export const fetchAuthorMatchups = createAsyncThunk('fetchAuthorMatchups', async (author: string, {rejectWithValue}) => {
     try {
-        const response = await fetch(`${URL}/matchups/${author}`);
+        const response = await fetch(`${API_URL}/matchups/${author}`);
         const data: Matchup[] = await response.json();
         return {author: author, data};
     } catch (e) {
@@ -26,9 +26,9 @@ export const fetchAuthorMatchups = createAsyncThunk('fetchAuthorMatchups', async
     }
 });
 
-export const saveMatchup = createAsyncThunk('saveMatchup', async (matchup: Matchup, {rejectWithValue}) => {
+export const saveMatchup = createAsyncThunk('saveMatchup', async ([author, matchup]:[string, Matchup], {rejectWithValue}) => {
     try {
-        await fetch(`${URL}/matchups`, {
+        await fetch(`${API_URL}/matchups/${author}`, {
             method: 'POST',
             mode: 'cors',
             headers: {
@@ -36,7 +36,7 @@ export const saveMatchup = createAsyncThunk('saveMatchup', async (matchup: Match
             },
             body: JSON.stringify(matchup)
         });
-        return matchup;
+        return {author, matchup};
     } catch (e) {
         rejectWithValue(e);
     }
@@ -53,8 +53,8 @@ const slice = createSlice({
             })
             .addCase(saveMatchup.fulfilled, (state, action) => {
                 if (action.payload) {
-                    const matchup: Matchup = action.payload;
-                    const author = matchup.author;
+                    const matchup: Matchup = action.payload.matchup;
+                    const author = action.payload.author;
                     const matchups = [...state.matchups[author]];
                     const filtered = matchups.filter(m => m.opponent !== matchup.opponent || m.champion !== matchup.champion);
                     filtered.push(matchup);

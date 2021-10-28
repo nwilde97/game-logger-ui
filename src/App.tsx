@@ -1,92 +1,141 @@
-import React, {Fragment, useEffect} from 'react';
-import './App.scss';
-import styled from "styled-components";
-import {Link, Router} from "@reach/router";
+import React, {Fragment} from 'react';
+import {useDispatch, useSelector} from "react-redux";
+import {selectSessionUser, logout} from "./state/session";
+import {
+  Box,
+  Divider,
+  IconButton,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Menu,
+  MenuItem,
+  styled,
+  Toolbar,
+  Typography
+} from "@mui/material";
+import MuiDrawer from '@mui/material/Drawer';
+import MuiAppBar from '@mui/material/AppBar';
+import {AccountCircle, Assignment, Logout, Person} from "@mui/icons-material";
+import {AuthorView} from "./views/AuthorView";
 import {MatchupPane} from "./views/MatchupPane";
 import {MatchupListView} from "./views/MatchupListView";
-import {AuthorView} from "./views/AuthorView";
-import {useDispatch, useSelector} from "react-redux";
-import {selectSessionUser, setUser, verifyToken} from "./state/session";
-import {Login} from "./views/Login";
+import {Link, Router} from "@reach/router";
+import {ProfileView} from "./views/ProfileView";
 
 function App() {
-    const user = useSelector(selectSessionUser);
-    const dispatch = useDispatch();
-    useEffect(() => {
-        if (!user) {
-            //Check the url params for a token
-            const token = window.location.hash?.split("&").find(p => /access_token/.test(p))?.split("=")[1];
-            if (token) {
-                dispatch(verifyToken(token));
-            } else {
-                const info = window.localStorage.getItem("session");
-                if (info) {
-                    dispatch(setUser(JSON.parse(info)));
-                }
-            }
-        }
-    }, [user, dispatch]);
-    return (
-        user ?
-            <AppDiv className="App">
+  const user = useSelector(selectSessionUser);
+  const dispatch = useDispatch();
+  const leave = () => {
+    dispatch(logout());
+  }
 
-                <Fragment>
-                    <Header>
-                        <User>Hello {user.username}!</User>
-                        <Logo>Notes.gg</Logo>
-                        <Links>
-                            <Link to={`/author/${user.username}`}>My Stuff</Link>
-                            <Link to="/author/foggedftw2">Fogged Matchups</Link>
-                            <Link to="/champ/foggedftw2/23">Tryndamere Matchups</Link>
-                        </Links>
-                    </Header>
-                    <Router primary={false}>
-                        <AuthorView default></AuthorView>
-                        <MatchupPane path="/matchup/:author/:champKey/:opponentKey"></MatchupPane>
-                        <MatchupPane path="/matchup/:author"></MatchupPane>
-                        <MatchupListView path="/champ/:author/:champ"></MatchupListView>
-                        <AuthorView path="/author/:author"></AuthorView>
-                    </Router>
-                </Fragment>
-            </AppDiv>
-
-            :
-            <Login></Login>
-    );
+  // Functionality for user menu
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  return (
+    <Fragment>
+        <Box sx={{display: 'flex'}}>
+          <AppBar position="absolute">
+            <Toolbar>
+              <Typography component="h1" variant="h6" sx={{flexGrow: 1}}>
+                Noted.gg
+              </Typography>
+              <Typography component="h1" variant="h6" sx={{pr: 1}}>
+                Hello {user!.nickname}!
+              </Typography>
+              <IconButton onClick={handleClick}>
+                <Person></Person>
+              </IconButton>
+            </Toolbar>
+          </AppBar>
+          <Drawer variant="permanent" open={true}>
+            <Toolbar/>
+            <div>
+              <ListItem button component={Link} to={`/author/${user!.id}`}>
+                <ListItemIcon>
+                  <Assignment/>
+                </ListItemIcon>
+                <ListItemText primary="My Entries" color={"inherit"}/>
+              </ListItem>
+              <ListItem button component={Link} to={`/author/demo-user`}>
+                <ListItemIcon>
+                  <Assignment/>
+                </ListItemIcon>
+                <ListItemText primary="Fogged Matchups"/>
+              </ListItem>
+              <ListItem button component={Link} to={`/champ/demo-user/23`}>
+                <ListItemIcon>
+                  <Assignment/>
+                </ListItemIcon>
+                <ListItemText primary="Tryndamere Matchups"/>
+              </ListItem>
+            </div>
+          </Drawer>
+          <Box component="main" sx={{
+            backgroundColor: theme => theme.palette.grey[100],
+            flexGrow: 1,
+            height: '100vh',
+            overflow: 'auto',
+          }}>
+            <Toolbar sx={{mb: 5}}/>
+            <Router primary={false}>
+              <AuthorView default></AuthorView>
+              <MatchupPane path="/matchup/:author/:champKey/:opponentKey"></MatchupPane>
+              <MatchupPane path="/matchup/:author"></MatchupPane>
+              <MatchupListView path="/champ/:author/:champ"></MatchupListView>
+              <AuthorView path="/author/:author"></AuthorView>
+              <ProfileView path="/profile"></ProfileView>
+            </Router>
+          </Box>
+        </Box>
+      <Menu
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        onClick={handleClose}
+        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+      >
+        <MenuItem component={Link} to={"/profile"}>
+          <ListItemIcon>
+            <AccountCircle />
+          </ListItemIcon>
+          Profile
+        </MenuItem>
+        <Divider />
+        <MenuItem onClick={leave} >
+          <ListItemIcon>
+            <Logout fontSize="small" />
+          </ListItemIcon>
+          Logout
+        </MenuItem>
+      </Menu>
+    </Fragment>
+  );
 }
 
 export default App;
 
-const AppDiv = styled.div`
-  -webkit-text-stroke: 1px hsl(51,36%,10%);
-  text-shadow: 0px 4px 4px #282828;
-  font-family: 'Kalam', cursive;
-  position: relative;
-`
-const Header = styled.div`
-    position: fixed;
-    top: 0px;
-    height: 55px;
-    left: 0px;
-    right: 0px;
-    background: linear-gradient(to right, hsl(51,36%,39%) 0%, hsl(51,36%,60%) 10% ,hsl(51,36%,60%) 90%,hsl(51,36%,39%) 100%);
-`
+const drawerWidth: number = 240;
 
-const Links = styled.div`
-    display: flex;
-    gap: 15px;
-    margin: auto;
-    width: fit-content;
-    line-height: 55px;
-`
+const AppBar = styled(MuiAppBar)(({theme}) => ({
+  zIndex: theme.zIndex.drawer + 1
+}));
 
-const User = styled.div`
-    float: right;
-    font-size: 24px;
-    padding: 15px;
-`
-const Logo = styled.div`
-    font-size: 24px;
-    padding: 15px;
-    float: left;
-`
+const Drawer = styled(MuiDrawer)(
+  ({theme}) => ({
+    '& .MuiDrawer-paper': {
+      position: 'relative',
+      whiteSpace: 'nowrap',
+      width: drawerWidth,
+      boxSizing: 'border-box',
+    },
+  }),
+);

@@ -7,6 +7,7 @@ import {RunePicker} from "../components/RunePicker";
 import {ItemPicker} from "../components/ItemPicker";
 import {SkillPicker} from "../components/SkillPicker";
 import {RouteComponentProps} from "@reach/router";
+import {Paper, Typography} from "@mui/material";
 
 export interface GameFormProps extends RouteComponentProps {
 
@@ -14,8 +15,8 @@ export interface GameFormProps extends RouteComponentProps {
 
 export const GameForm = () => {
     return (
-        <Form>
-            <Header>Matchup</Header>
+        <Paper elevation={2}>
+            <Typography variant={"h6"}>Matchup</Typography>
             <Champs>
                 <Champion src='https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/86.png'></Champion>
                 <Champion src='https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/92.png'></Champion>
@@ -40,17 +41,9 @@ export const GameForm = () => {
             <SkillPicker skills={garen.skills}></SkillPicker>
             <Question>Tips for this matchup</Question>
             <Tips></Tips>
-        </Form>
+        </Paper>
     )
 }
-const Form = styled.div`
-  margin: 50px;
-`
-
-const Header = styled.h1`
-    color: #e0e0e0;
-    font-size: 24px;
-`
 
 const Champs = styled.div`
     display: flex;
@@ -58,7 +51,7 @@ const Champs = styled.div`
 `
 
 const Champion = styled.img`
-    
+
 `
 
 const Question = styled.div`
