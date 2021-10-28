@@ -2,7 +2,7 @@ import React, {Fragment, useEffect} from "react";
 import {Login} from "../views/Login";
 import {useDispatch, useSelector} from "react-redux";
 import {selectDiscordInfo, selectSessionUser, setDiscordInfo, updateLoggedInUser, verifyToken} from "../state/session";
-import {Box, Container, LinearProgress} from "@mui/material";
+import {Container, LinearProgress} from "@mui/material";
 
 export const Security = (props: any) => {
   const discord = useSelector(selectDiscordInfo);
