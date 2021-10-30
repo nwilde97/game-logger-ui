@@ -1,4 +1,4 @@
-import React, {Fragment} from 'react';
+import React, {Fragment, useEffect} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {selectSessionUser, logout} from "./state/session";
 import {
@@ -23,12 +23,25 @@ import {MatchupListView} from "./views/MatchupListView";
 import {Link, Router} from "@reach/router";
 import {ProfileView} from "./views/ProfileView";
 import {UsersView} from "./views/UsersView";
+import {selectListenerStatus, setListenerStatus} from "./state/league";
+import {GameListener} from "./components/GameListener";
+import {fetchChampList} from "./state/champions";
+import OnlinePredictionIcon from '@mui/icons-material/OnlinePrediction';
+import {fetchAllUsers} from "./state/users";
 
 function App() {
   const user = useSelector(selectSessionUser);
   const dispatch = useDispatch();
+  useEffect(()=> {
+    dispatch(fetchChampList());
+    dispatch(fetchAllUsers());
+  },[dispatch]);
   const leave = () => {
     dispatch(logout());
+  }
+  const listenerStatus = useSelector(selectListenerStatus);
+  const toggle = () => {
+    dispatch(setListenerStatus(listenerStatus === "active" ? "inactive" : "active"));
   }
 
   // Functionality for user menu
@@ -42,13 +55,20 @@ function App() {
   };
   return (
     <Fragment>
+      {listenerStatus === "active" && <GameListener />}
         <Box sx={{display: 'flex'}}>
           <AppBar position="absolute">
             <Toolbar>
               <Typography component="h1" variant="h6" sx={{flexGrow: 1}}>
                 Noted.gg
               </Typography>
-              <Typography component="h1" variant="h6" sx={{pr: 1}}>
+              {listenerStatus === "active" &&
+                <Fragment>
+                  (Currently Tracking
+                  <OnlinePredictionIcon titleAccess={"Tracking games"} /> )
+                </Fragment>
+              }
+              <Typography component="h1" variant="h6" sx={{pr: 1, pl: 2}}>
                 Hello {user!.nickname}!
               </Typography>
               <IconButton onClick={handleClick}>
@@ -89,6 +109,7 @@ function App() {
             <Router primary={false}>
               <AuthorView default></AuthorView>
               <MatchupPane path="/matchup/:author/:champKey/:opponentKey"></MatchupPane>
+              <MatchupPane path="/matchup/:author/:champKey"></MatchupPane>
               <MatchupPane path="/matchup/:author"></MatchupPane>
               <MatchupListView path="/champ/:author/:champ"></MatchupListView>
               <AuthorView path="/author/:author"></AuthorView>
@@ -110,6 +131,12 @@ function App() {
             <AccountCircle />
           </ListItemIcon>
           Profile
+        </MenuItem>
+        <MenuItem onClick={toggle}>
+          <ListItemIcon>
+            <AccountCircle />
+          </ListItemIcon>
+          { listenerStatus === "inactive" ? "Track Games" : "Stop Tracking Games" }
         </MenuItem>
         <Divider />
         <MenuItem onClick={leave} >

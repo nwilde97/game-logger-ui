@@ -27,8 +27,8 @@ export const MatchupPane = (props: RouteComponentProps) => {
         if(!matchups) dispatch(fetchAuthorMatchups(author))
     }, [dispatch, matchups, author]);
     const matchup = matchups?.find(m => m.champion === champKey && m.opponent === opponentKey);
-    const champion = champs?.find(c => c.key === matchup?.champion);
-    const opponent = champs?.find(c => c.key === matchup?.opponent);
+    const champion = champs?.find(c => c.key === champKey);
+    const opponent = champs?.find(c => c.key === opponentKey);
     const data = {
         comments: matchup?.comments || '',
         rating: matchup?.rating || 0,

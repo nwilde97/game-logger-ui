@@ -19,6 +19,7 @@ import {
   TableBody
 } from "@mui/material";
 import {Add, Create, Visibility} from "@mui/icons-material";
+import {selectAllUsers, User} from "../state/users";
 
 export interface AuthorViewProps extends RouteComponentProps {
 
@@ -28,12 +29,14 @@ export const AuthorView = (props: AuthorViewProps) => {
   const params: { author?: string } = useParams();
   const dispatch = useDispatch();
   const user = useSelector(selectSessionUser);
-  const author = params?.author || user!.id;
-  const matchups = useSelector((state: RootState) => selectAuthorMatchups(state, author));
+  const users = useSelector(selectAllUsers);
+  const authorId = params?.author || user!.id;
+  const author: User | undefined = users?.find(user => user.id === authorId);
+  const matchups = useSelector((state: RootState) => selectAuthorMatchups(state, authorId));
   const champs = useSelector(selectChamps);
   useEffect(() => {
-    if (!matchups) dispatch(fetchAuthorMatchups(author));
-  }, [dispatch, matchups, author, user]);
+    if (!matchups) dispatch(fetchAuthorMatchups(authorId));
+  }, [dispatch, matchups, authorId, user]);
   useEffect(() => {
     if (!champs) dispatch(fetchChampList());
   }, [dispatch, champs]);
@@ -41,14 +44,14 @@ export const AuthorView = (props: AuthorViewProps) => {
     <Container maxWidth={"lg"}>
       <Paper elevation={2} sx={{p: 2}}>
         <Toolbar>
-          {user!.id === author
+          {user!.id === authorId
             ?
             <Fragment>
               <Typography variant={"h6"} sx={{flexGrow: 1}}>Here are your log entries</Typography>
               <Button component={Link} variant={"contained"} to={`/matchup/${user!.id}`} endIcon={<Add/>}>Create
                 New</Button>
             </Fragment>
-            : <Typography variant={"h6"}>{author}'s entries</Typography>
+            : <Typography variant={"h6"}>{author?.nickname}'s entries</Typography>
           }
         </Toolbar>
         <Table size="small">
@@ -68,9 +71,9 @@ export const AuthorView = (props: AuthorViewProps) => {
                 return (
                   <TableRow key={`${matchup.champion}o${matchup.opponent}`}>
                     <TableCell>
-                      <Button component={Link} to={`/matchup/${author}/${matchup.champion}/${matchup.opponent}`}>
-                        {(user!.id === author) && <Create/>}
-                        {(user!.id !== author) && <Visibility/>}
+                      <Button component={Link} to={`/matchup/${authorId}/${matchup.champion}/${matchup.opponent}`}>
+                        {(user!.id === authorId) && <Create/>}
+                        {(user!.id !== authorId) && <Visibility/>}
                       </Button>
                     </TableCell>
                     <TableCell>{champ?.name}</TableCell>
