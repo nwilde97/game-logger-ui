@@ -4,7 +4,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {saveUser, selectDiscordInfo, selectSessionUser} from "../state/session";
 import {Button, Container, Divider, InputAdornment, Paper, TextField, Typography} from "@mui/material";
 import {Facebook, Instagram, Tv, Twitter, YouTube} from "@mui/icons-material";
-import {User} from "../state/users";
+import {User} from "../model/user";
 
 export interface ProfileViewProps extends RouteComponentProps {
 

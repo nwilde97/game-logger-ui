@@ -19,7 +19,8 @@ import {
   TableBody
 } from "@mui/material";
 import {Add, Create, Visibility} from "@mui/icons-material";
-import {selectAllUsers, User} from "../state/users";
+import {selectAllUsers} from "../state/users";
+import {User} from "../model/user";
 
 export interface AuthorViewProps extends RouteComponentProps {
 

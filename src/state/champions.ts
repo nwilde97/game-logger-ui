@@ -1,6 +1,7 @@
 import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {RootState} from './store';
-import {Champ, getChampList} from "../services/ddragon.service";
+import {getChampList} from "../services/champ.service";
+import {Champ} from "../model/champ";
 
 export interface ChampionState {
     champs?: Champ[];

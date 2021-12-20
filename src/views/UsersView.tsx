@@ -2,8 +2,9 @@ import {Link as RLink, RouteComponentProps} from "@reach/router";
 import {Container, Link, Paper, Table, TableBody, TableHead, TableRow} from "@mui/material";
 import TableCell from "@mui/material/TableCell";
 import {useDispatch, useSelector} from "react-redux";
-import {fetchAllUsers, selectAllUsers, User} from "../state/users";
+import {fetchAllUsers, selectAllUsers} from "../state/users";
 import {useEffect} from "react";
+import {User} from "../model/user";
 
 export interface UsersViewProps extends RouteComponentProps {
 

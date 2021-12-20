@@ -1,19 +1,8 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import axios from "axios";
-import {API_URL} from "./matchups";
 import {RootState} from "./store";
-
-export interface User {
-  id: string;
-  description?: string;
-  nickname: string;
-  facebook?: string;
-  twitter?: string;
-  instagram?: string;
-  twitch?: string;
-  youtube?: string;
-  email?: string;
-}
+import {API_URL} from "../services/environment";
+import {User} from "../model/user";
 
 export interface UserState {
   all: User[];

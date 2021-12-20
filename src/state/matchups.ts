@@ -1,10 +1,7 @@
 import {Matchup, MatchupList} from "../model/matchup";
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import {RootState} from "./store";
-
-export const API_URL = 'https://e76jydntqk.execute-api.us-west-2.amazonaws.com/v1';
-
-// export const API_URL = 'http://localhost:8080';
+import {findMatchupsByAuthor, persistMatchup} from "../services/matchup.service";
 
 export interface MatchupsState {
     matchups: {
@@ -18,8 +15,7 @@ const initialState: MatchupsState = {
 
 export const fetchAuthorMatchups = createAsyncThunk('fetchAuthorMatchups', async (author: string, {rejectWithValue}) => {
     try {
-        const response = await fetch(`${API_URL}/matchups/${author}`);
-        const data: Matchup[] = await response.json();
+        const data = await findMatchupsByAuthor(author);
         return {author: author, data};
     } catch (e) {
         rejectWithValue(e);
@@ -28,14 +24,7 @@ export const fetchAuthorMatchups = createAsyncThunk('fetchAuthorMatchups', async
 
 export const saveMatchup = createAsyncThunk('saveMatchup', async ([author, matchup]:[string, Matchup], {rejectWithValue}) => {
     try {
-        await fetch(`${API_URL}/matchups/${author}`, {
-            method: 'POST',
-            mode: 'cors',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(matchup)
-        });
+        await persistMatchup(author, matchup);
         return {author, matchup};
     } catch (e) {
         rejectWithValue(e);

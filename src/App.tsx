@@ -16,7 +16,7 @@ import {
 } from "@mui/material";
 import MuiDrawer from '@mui/material/Drawer';
 import MuiAppBar from '@mui/material/AppBar';
-import {AccountCircle, Assignment, Logout, Person} from "@mui/icons-material";
+import {AccountCircle, Assignment, EmojiEvents, Logout, Person} from "@mui/icons-material";
 import {AuthorView} from "./views/AuthorView";
 import {MatchupPane} from "./views/MatchupPane";
 import {MatchupListView} from "./views/MatchupListView";
@@ -28,6 +28,7 @@ import {GameListener} from "./components/GameListener";
 import {fetchChampList} from "./state/champions";
 import OnlinePredictionIcon from '@mui/icons-material/OnlinePrediction';
 import {fetchAllUsers} from "./state/users";
+import {ChampListView} from "./views/ChampListView";
 
 function App() {
   const user = useSelector(selectSessionUser);
@@ -97,6 +98,12 @@ function App() {
                 </ListItemIcon>
                 <ListItemText primary="All Users"/>
               </ListItem>
+              <ListItem button component={Link} to={`/champs`}>
+                <ListItemIcon>
+                  <EmojiEvents/>
+                </ListItemIcon>
+                <ListItemText primary="Champions"/>
+              </ListItem>
             </div>
           </Drawer>
           <Box component="main" sx={{
@@ -115,6 +122,7 @@ function App() {
               <AuthorView path="/author/:author"></AuthorView>
               <ProfileView path="/profile"></ProfileView>
               <UsersView path="/users"></UsersView>
+              <ChampListView path="/champs"></ChampListView>
             </Router>
           </Box>
         </Box>

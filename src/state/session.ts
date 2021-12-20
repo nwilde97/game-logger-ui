@@ -1,16 +1,9 @@
 import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {RootState} from "./store";
 import {navigate} from "@reach/router";
-import {API_URL} from "./matchups";
 import axios from "axios";
-import {User} from "./users";
-
-export interface DiscordInfo {
-  id: string;
-  username: string;
-  avatar: string;
-  token: string;
-}
+import {API_URL} from "../services/environment";
+import {DiscordInfo, User} from "../model/user";
 
 export interface SessionState {
   user?: User;

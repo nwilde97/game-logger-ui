@@ -1,8 +1,8 @@
 import React, {RefObject, useEffect, useRef, useState} from 'react';
 import styled from "styled-components";
-import {Champ} from "../services/ddragon.service";
 import {useDispatch, useSelector} from "react-redux";
 import {fetchChampList, selectChamps} from "../state/champions";
+import {Champ} from "../model/champ";
 
 export interface ChampPickerProps {
     onChange: (champ: string) => any;

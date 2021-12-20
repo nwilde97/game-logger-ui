@@ -8,7 +8,7 @@ import {useAppDispatch} from "../state/hooks";
 import React, {useEffect} from "react";
 import {fetchAuthorMatchups, selectAuthorMatchupLists} from "../state/matchups";
 import {MatchupList} from "../model/matchup";
-import {Champ} from "../services/ddragon.service";
+import {Champ} from "../model/champ";
 
 export interface MatchupListViewProps extends RouteComponentProps {
 }
