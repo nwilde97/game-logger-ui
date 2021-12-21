@@ -9,6 +9,7 @@ import {Add} from "@mui/icons-material";
 export interface ItemPickerProps {
   onChange: (items: Item[]) => void;
   items: Item[];
+  readonly?: boolean;
 }
 
 export const ItemPicker = (props: ItemPickerProps) => {
@@ -20,14 +21,17 @@ export const ItemPicker = (props: ItemPickerProps) => {
   },[props]);
   const addItem = (item: Item) => {
     if(items.some(i => i.id === item.id)) return;
-    setItems([...items, item]);
+    const newItems = [...items, item];
+    setItems(newItems);
     setOpen(false);
-    props.onChange(items);
+    props.onChange(newItems);
   }
   const removeItem = (item: Item) => {
-    setItems(items.filter(i => i.id !== item.id));
+    if(props.readonly) return;
+    const newItems = items.filter(i => i.id !== item.id);
+    setItems(newItems);
     setOpen(false);
-    props.onChange(items);
+    props.onChange(newItems);
   }
     return (
       <>
@@ -37,9 +41,9 @@ export const ItemPicker = (props: ItemPickerProps) => {
               <ItemSelection src={item.imageUrl} key={item.id} onClick={()=>removeItem(item)}></ItemSelection>
             )
           }
-          <Button onClick={()=>setOpen(true)} variant={"contained"} size={"large"}>
-            <Add fontSize={"large"} />
-          </Button>
+          {!props.readonly && <Button onClick={() => setOpen(true)} variant={"contained"} size={"large"}>
+            <Add fontSize={"large"}/>
+          </Button>}
         </Box>
         <Modal open={open} onClose={()=>setOpen(false)}>
           <Box sx={style}>

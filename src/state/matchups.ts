@@ -1,7 +1,7 @@
 import {Matchup, MatchupList} from "../model/matchup";
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import {RootState} from "./store";
-import {findMatchupsByAuthor, persistMatchup} from "../services/matchup.service";
+import {findMatchupsByAuthor, persistMatchup, removeMatchup} from "../services/matchup.service";
 
 export interface MatchupsState {
     matchups: {
@@ -31,6 +31,15 @@ export const saveMatchup = createAsyncThunk('saveMatchup', async ([author, match
     }
 });
 
+export const deleteMatchup = createAsyncThunk('deleteMatchup', async ([author, matchup]:[string, Matchup], {rejectWithValue}) => {
+    try {
+        await removeMatchup(author, matchup);
+      return {author, matchup};
+    } catch (e) {
+        rejectWithValue(e);
+    }
+});
+
 const slice = createSlice({
     name: 'matchups',
     initialState,
@@ -39,6 +48,9 @@ const slice = createSlice({
         builder
             .addCase(fetchAuthorMatchups.fulfilled, (state, action) => {
                 state.matchups[action.payload!.author] = action.payload!.data;
+            })
+            .addCase(deleteMatchup.fulfilled, (state, action) => {
+                state.matchups[action.payload!.author] = state.matchups[action.payload!.author].filter(m => m.opponent !== action.payload!.matchup.opponent || m.champion !== action.payload!.matchup.champion);
             })
             .addCase(saveMatchup.fulfilled, (state, action) => {
                 if (action.payload) {

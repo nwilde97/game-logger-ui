@@ -5,5 +5,5 @@ export const getChampList = async (): Promise<Champ[]> => {
     const data: any[] = await response.json();
     return data.map(d => {
         return {...d, key: d.id.toString(), image: `https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/${d.id}.png`}
-    });
+    }).filter(c => c.key > 0);
 }

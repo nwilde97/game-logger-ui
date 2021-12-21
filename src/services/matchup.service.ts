@@ -15,3 +15,14 @@ export const persistMatchup = async (author: string, matchup: Matchup): Promise<
     body: JSON.stringify(matchup)
   });
 }
+
+export const removeMatchup = async (author: string, matchup: Matchup): Promise<any> => {
+  return fetch(`${API_URL}/matchups/${author}/${matchup.champion}/${matchup.opponent}`, {
+    method: 'DELETE',
+    mode: 'cors',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(matchup)
+  });
+}

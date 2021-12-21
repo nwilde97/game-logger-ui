@@ -2,7 +2,7 @@ import {Link, RouteComponentProps, useParams} from "@reach/router";
 import styled from "styled-components";
 import {useDispatch, useSelector} from "react-redux";
 import React, {Fragment, useEffect} from "react";
-import {fetchAuthorMatchups, selectAuthorMatchups} from "../state/matchups";
+import {deleteMatchup, fetchAuthorMatchups, selectAuthorMatchups} from "../state/matchups";
 import {RootState} from "../state/store";
 import {fetchChampList, selectChamps} from "../state/champions";
 import {selectSessionUser} from "../state/session";
@@ -18,9 +18,10 @@ import {
   TableCell,
   TableBody
 } from "@mui/material";
-import {Add, Create, Visibility} from "@mui/icons-material";
+import {Add, Cancel, Create, Visibility} from "@mui/icons-material";
 import {selectAllUsers} from "../state/users";
 import {User} from "../model/user";
+import {Matchup} from "../model/matchup";
 
 export interface AuthorViewProps extends RouteComponentProps {
 
@@ -41,6 +42,9 @@ export const AuthorView = (props: AuthorViewProps) => {
   useEffect(() => {
     if (!champs) dispatch(fetchChampList());
   }, [dispatch, champs]);
+  const remove = (matchup: Matchup) => {
+    dispatch(deleteMatchup([authorId, matchup]));
+  }
   return (
     <Container maxWidth={"lg"}>
       <Paper elevation={2} sx={{p: 2}}>
@@ -76,6 +80,12 @@ export const AuthorView = (props: AuthorViewProps) => {
                         {(user!.id === authorId) && <Create/>}
                         {(user!.id !== authorId) && <Visibility/>}
                       </Button>
+                      {
+                        user!.id === authorId &&
+                        <Button onClick={()=>remove(matchup)}>
+                          <Cancel />
+                        </Button>
+                      }
                     </TableCell>
                     <TableCell>{champ?.name}</TableCell>
                     <TableCell>{opponent?.name}</TableCell>

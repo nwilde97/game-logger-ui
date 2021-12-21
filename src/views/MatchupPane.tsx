@@ -12,6 +12,7 @@ import styled from "styled-components";
 import {RunePicker} from "../components/RunePicker";
 import {ItemPicker} from "../components/ItemPicker";
 import {Item} from "../model/item";
+import {SummonerPicker} from "../components/SummonerPicker";
 
 export interface MatchupPaneProps extends RouteComponentProps {
 
@@ -40,12 +41,13 @@ export const MatchupPane = (props: RouteComponentProps) => {
     author: user!.nickname,
     runes: matchup?.runes || {
       primarySelected: {},
-      secondarySelected: []
+      secondarySelected: [],
+      modSelected: {}
     },
     items: matchup?.items || [] as Item[]
   }
   const save = async () => {
-    if (!data.champion || !data.opponent) {
+    if (!data.champion || !data.opponent || !data.comments) {
       alert("Please complete the form");
     } else {
       dispatch(saveMatchup([author, data]));
@@ -60,11 +62,11 @@ export const MatchupPane = (props: RouteComponentProps) => {
       <Paper elevation={2} sx={{p: 2}}>
         <Question>Matchup</Question>
         <Champs>
-          {champion ? <Champion src={champion.image}></Champion> :
-            <ChampPicker onChange={(c) => data.champion = c}></ChampPicker>}
+          {user?.id !== author ? <Champion src={champion?.image}></Champion> :
+            <ChampPicker onChange={(c) => data.champion = c} champKey={data.champion}></ChampPicker>}
           vs.
-          {opponent ? <Champion src={opponent.image}></Champion> :
-            <ChampPicker onChange={(c) => data.opponent = c}></ChampPicker>}
+          {user?.id !== author ? <Champion src={opponent?.image}></Champion> :
+            <ChampPicker onChange={(c) => data.opponent = c} champKey={data.opponent}></ChampPicker>}
         </Champs>
         <Question>How difficult was the matchup?</Question>
         <StarRanker rating={data.rating} onChange={(value) => data.rating = value}
@@ -90,9 +92,11 @@ export const MatchupPane = (props: RouteComponentProps) => {
             <Comments>{data.comments}</Comments>
         }
         <Question>Runes</Question>
-        <RunePicker runes={data.runes} onChange={(runes) => data.runes = runes}></RunePicker>
+        <RunePicker runes={data.runes} onChange={(runes) => data.runes = runes} readonly={user?.id !== author}></RunePicker>
+        <Question>Summoner Spells</Question>
+        <SummonerPicker d={matchup?.d} f={matchup?.f} readonly={user?.id !== author}></SummonerPicker>
         <Question>Items</Question>
-        <ItemPicker items={data.items} onChange={(items) => data.items = items}></ItemPicker>
+        <ItemPicker items={data.items} onChange={(items) => data.items = items} readonly={user?.id !== author}></ItemPicker>
       </Paper>
     </Container>
   )
