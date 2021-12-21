@@ -1,9 +1,8 @@
 import React from "react";
 import styled from "styled-components";
-import {garen, items, runes, summonerSpells} from "../constants";
+import {garen, items, summonerSpells} from "../constants";
 import {StarRanker} from "../components/StarRanker";
 import {ImagePicker} from "../components/ImagePicker";
-import {RunePicker} from "../components/RunePicker";
 import {ItemPicker} from "../components/ItemPicker";
 import {SkillPicker} from "../components/SkillPicker";
 import {RouteComponentProps} from "@reach/router";
@@ -30,12 +29,9 @@ export const GameForm = () => {
             </Summs>
             <Question>Runes?</Question>
             <Runes>
-                <RunePicker rune={runes[0]}></RunePicker>
-                <RunePicker rune={runes[1]} secondary={true}></RunePicker>
             </Runes>
             <Question>What item progression is best for this matchup?</Question>
             <Items>
-                <ItemPicker eqList={items}></ItemPicker>
             </Items>
             <Question>What combos are most effective for this matchup?</Question>
             <SkillPicker skills={garen.skills}></SkillPicker>

@@ -29,6 +29,8 @@ import {fetchChampList} from "./state/champions";
 import OnlinePredictionIcon from '@mui/icons-material/OnlinePrediction';
 import {fetchAllUsers} from "./state/users";
 import {ChampListView} from "./views/ChampListView";
+import {fetchRuneList} from "./state/runes";
+import {fetchItemList} from "./state/items";
 
 function App() {
   const user = useSelector(selectSessionUser);
@@ -36,6 +38,8 @@ function App() {
   useEffect(()=> {
     dispatch(fetchChampList());
     dispatch(fetchAllUsers());
+    dispatch(fetchRuneList());
+    dispatch(fetchItemList());
   },[dispatch]);
   const leave = () => {
     dispatch(logout());

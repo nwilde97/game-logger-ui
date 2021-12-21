@@ -4,6 +4,8 @@ import matchups from "./matchups";
 import session from "./session";
 import users from "./users";
 import league from "./league";
+import runes from "./runes";
+import items from "./items";
 
 export const store = configureStore({
   reducer: {
@@ -11,7 +13,9 @@ export const store = configureStore({
     matchups,
     session,
     users,
-    league
+    league,
+    runes,
+    items
   },
 });
 

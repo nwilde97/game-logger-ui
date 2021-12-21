@@ -1,3 +1,5 @@
+import {Item} from "./item";
+
 export interface MatchupList {
     author: string;
     key: string;
@@ -15,4 +17,13 @@ export interface Matchup {
     opponent: string;
     rating: number;
     comments: string;
+    runes: RuneSelection;
+    items: Item[]
+}
+
+export interface RuneSelection {
+  primary?: number;
+  secondary?: number;
+  primarySelected: any;
+  secondarySelected: number[];
 }
