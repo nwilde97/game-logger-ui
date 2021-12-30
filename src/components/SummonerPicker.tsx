@@ -6,6 +6,7 @@ export interface SummonerPickerProps {
   f?: string;
   d?: string;
   readonly?: boolean;
+  onChange:(d: string, f: string)=>void
 }
 
 const summonerSpells = [
@@ -30,8 +31,14 @@ export const SummonerPicker = (props: SummonerPickerProps) => {
     setD(props.d || summonerSpells[7]);
   }, [props]);
   const choose = (summ: string) => {
-    if(option === "d") setD(summ);
-    if(option === "f") setF(summ);
+    if(option === "d") {
+      setD(summ);
+      props.onChange(summ,f);
+    }
+    if(option === "f") {
+      setF(summ);
+      props.onChange(d,summ);
+    }
     setAnchorEl(null);
   }
   return (

@@ -2,8 +2,8 @@ import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {RootState} from "./store";
 import {navigate} from "@reach/router";
 import axios from "axios";
-import {API_URL} from "../services/environment";
 import {DiscordInfo, User} from "../model/user";
+import {query} from "../services/graphql.service";
 
 export interface SessionState {
   user?: User;
@@ -28,30 +28,23 @@ export const verifyToken = createAsyncThunk('verifyToken', async (token: string,
 });
 
 const postUser = async (user:User) => {
-  await axios.request({
-    url: `${API_URL}/users`,
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    data: user
+  await query({
+    query: `mutation {
+  saveUser(user:${JSON.stringify(user).replace(/"([^"]+)":/g, '$1:')})
+}
+`
   });
   return user;
 }
 
 export const updateLoggedInUser = createAsyncThunk('updateLoggedInUser', async (discord:DiscordInfo, {rejectWithValue})=> {
   try {
-    const user: User = await axios.get(`${API_URL}/users/${discord.id}`)
-      .then(res => res.data)
-      .catch(async err => {
-      if(err.response?.status === 404){
-        return await postUser({
-          id: discord.id,
-          nickname: discord.username
-        });
-      }
+    const user = await query({
+      query: `{
+        getUser(id:"${discord.id}"){id description nickname facebook twitter twitch youtube instagram email}
+      }`
     });
-    return user;
+    return user.getUser;
   } catch (e) {
     rejectWithValue(e);
   }

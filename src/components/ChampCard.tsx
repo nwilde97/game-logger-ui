@@ -1,16 +1,13 @@
-import {Card, CardActionArea, CardContent, CardMedia, Typography} from "@mui/material";
+import {Card, CardActionArea, CardContent, Typography} from "@mui/material";
 import React from "react";
 import {Champ} from "../model/champ";
+import {ChampImage} from "./ChampImage";
 
-export const ChampCard = (props: {champ: Champ}) => {
+export const ChampCard = (props: {champ: Champ, onClick?: () => void}) => {
     return (
       <Card sx={{ width: 200, margin: 2 }}>
-        <CardActionArea>
-          <CardMedia
-            component="img"
-            image={props.champ.image}
-            sx={{borderRadius: 40, width: 80, margin: "auto", marginTop: 2}}
-          />
+        <CardActionArea onClick={()=>props.onClick ? props.onClick() : false}>
+          <ChampImage imageUrl={props.champ.image}></ChampImage>
           <CardContent>
             <Typography gutterBottom variant="body1" component="div">
               {props.champ.name}

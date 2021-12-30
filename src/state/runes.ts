@@ -1,7 +1,7 @@
 import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {RootState} from './store';
 import {RuneTree} from "../model/rune";
-import {fetchRuneTree} from "../services/rune.service";
+import {query} from "../services/graphql.service";
 
 export interface RuneState {
   runes?: RuneTree[];
@@ -14,8 +14,33 @@ const initialState: RuneState = {
 
 export const fetchRuneList = createAsyncThunk('fetchRuneList', async (_, { rejectWithValue } ) => {
     try {
-        const runes = await fetchRuneTree();
-        return runes;
+        const runes = await query({
+          query: `
+{
+  getRunes{
+   id
+    name
+    imageUrl
+    keystones {
+      id
+      name
+      imageUrl
+    }
+    runes {
+      id
+      name
+      imageUrl
+    }
+    mods {
+      id
+      name
+      imageUrl
+    }
+  }
+}
+      `
+        });
+        return runes.getRunes;
     } catch(e) {
         rejectWithValue(e);
     }

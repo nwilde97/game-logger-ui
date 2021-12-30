@@ -20,7 +20,7 @@ export const GameListener = () => {
 
   const yes = () => {
     setOpen(false);
-    navigate(`/matchup/${author!.id}/${activeChamp}/`);
+    navigate(`/matchup`);
   }
 
   useEffect(() => {

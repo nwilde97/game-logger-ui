@@ -1,13 +1,12 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {navigate, RouteComponentProps, useParams} from "@reach/router";
 import {useDispatch, useSelector} from "react-redux";
-import {fetchAuthorMatchups, saveMatchup, selectAuthorMatchups} from "../state/matchups";
-import {RootState} from "../state/store";
+import {fetchMatchupById, saveMatchup, selectActiveMatchup, selectSaveState, setSaveState} from "../state/matchups";
 import {StarRanker} from "../components/StarRanker";
-import {fetchChampList, selectChamps} from "../state/champions";
+import {selectChamps} from "../state/champions";
 import {ChampPicker} from "../components/ChampPicker";
 import {selectSessionUser} from "../state/session";
-import {Box, Button, Container, Paper, TextField, Typography} from "@mui/material";
+import {Alert, AlertTitle, Box, Button, Container, Paper, Snackbar, TextField, Typography} from "@mui/material";
 import styled from "styled-components";
 import {RunePicker} from "../components/RunePicker";
 import {ItemPicker} from "../components/ItemPicker";
@@ -19,39 +18,49 @@ export interface MatchupPaneProps extends RouteComponentProps {
 }
 
 export const MatchupPane = (props: RouteComponentProps) => {
-  const {champKey, opponentKey, author}: { champKey: string, opponentKey: string, author: string } = useParams();
+  const {id}: { id: string } = useParams();
   const dispatch = useDispatch();
   const champs = useSelector(selectChamps);
   const user = useSelector(selectSessionUser);
+  const saveState = useSelector(selectSaveState);
+  const matchup = useSelector(selectActiveMatchup);
+  const [open, setOpen] = useState(false);
   useEffect(() => {
-    if (!champs) dispatch(fetchChampList())
-  }, [dispatch, champs]);
-  const matchups = useSelector((state: RootState) => selectAuthorMatchups(state, author));
+    if(id !== matchup?.id) dispatch(fetchMatchupById(id));
+  }, [dispatch, id, matchup]);
   useEffect(() => {
-    if (!matchups) dispatch(fetchAuthorMatchups(author))
-  }, [dispatch, matchups, author]);
-  const matchup = matchups?.find(m => m.champion === champKey && m.opponent === opponentKey);
-  const champion = champs?.find(c => c.key === champKey);
-  const opponent = champs?.find(c => c.key === opponentKey);
+    if (saveState === "success") {
+      navigate(`/author/${user?.id}`);
+      dispatch(setSaveState("pending"));
+    }
+    if (saveState === "error") {
+      setOpen(true);
+    }
+  }, [saveState, dispatch, user, setOpen]);
+  const champion = champs?.find(c => c.key === matchup?.champion);
+  const opponent = champs?.find(c => c.key === matchup?.opponent);
+  const author = id ? matchup?.author : user?.id;
   const data = {
+    id: matchup?.id,
     comments: matchup?.comments || '',
     rating: matchup?.rating || 0,
     champion: matchup?.champion || '',
     opponent: matchup?.opponent || '',
-    author: user!.nickname,
+    author: user!.id,
     runes: matchup?.runes || {
-      primarySelected: {},
+      primarySelected: [0,0,0,0],
       secondarySelected: [],
-      modSelected: {}
+      modSelected: [0,0,0]
     },
-    items: matchup?.items || [] as Item[]
+    items: matchup?.items || [] as Item[],
+    f: matchup?.f,
+    d: matchup?.d
   }
   const save = async () => {
     if (!data.champion || !data.opponent || !data.comments) {
       alert("Please complete the form");
     } else {
-      dispatch(saveMatchup([author, data]));
-      navigate(`/author/${author}`);
+      await dispatch(saveMatchup(data));
     }
   }
   const cancel = () => {
@@ -92,12 +101,17 @@ export const MatchupPane = (props: RouteComponentProps) => {
             <Comments>{data.comments}</Comments>
         }
         <Question>Runes</Question>
-        <RunePicker runes={data.runes} onChange={(runes) => data.runes = runes} readonly={user?.id !== author}></RunePicker>
+        <RunePicker runes={data.runes} onChange={(runes) => data.runes = runes}
+                    readonly={user?.id !== author}></RunePicker>
         <Question>Summoner Spells</Question>
-        <SummonerPicker d={matchup?.d} f={matchup?.f} readonly={user?.id !== author}></SummonerPicker>
+        <SummonerPicker d={matchup?.d} f={matchup?.f} readonly={user?.id !== author} onChange={(d,f)=>{data.f = f; data.d = d;}}></SummonerPicker>
         <Question>Items</Question>
-        <ItemPicker items={data.items} onChange={(items) => data.items = items} readonly={user?.id !== author}></ItemPicker>
+        <ItemPicker items={data.items} onChange={(items) => data.items = items}
+                    readonly={user?.id !== author}></ItemPicker>
       </Paper>
+      <Snackbar anchorOrigin={{horizontal: 'center', vertical: "top"}} open={open} autoHideDuration={6000} onClose={() => setOpen(false)}>
+        <Alert severity="error" onClose={() => setOpen(false)}><AlertTitle>Error</AlertTitle>Something happened, data not saved!</Alert>
+      </Snackbar>
     </Container>
   )
 }

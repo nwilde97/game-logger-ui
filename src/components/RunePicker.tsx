@@ -48,7 +48,7 @@ export const RunePicker = (props: RunePickerProps) => {
         {
           allRunes.map(rune =>
             <TreeIcon key={rune.id} src={rune.imageUrl} className={rune.id === runes.primary ? "selected" : ""}
-                      onClick={() => { if(props.readonly)return; setRunes({...runes, primary: rune.id, primarySelected: {}})}}>
+                      onClick={() => { if(props.readonly)return; setRunes({...runes, primary: rune.id, primarySelected: [0,0,0,0]})}}>
             </TreeIcon>
           )
         }

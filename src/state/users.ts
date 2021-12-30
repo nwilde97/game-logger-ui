@@ -1,8 +1,7 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
-import axios from "axios";
 import {RootState} from "./store";
-import {API_URL} from "../services/environment";
 import {User} from "../model/user";
+import {query} from "../services/graphql.service";
 
 export interface UserState {
   all: User[];
@@ -14,8 +13,14 @@ const initialState: UserState = {
 
 export const fetchAllUsers = createAsyncThunk('fetchAllUsers', async (args, {rejectWithValue}) => {
   try {
-    const users: User[] = await axios.get(`${API_URL}/users`).then(r=>r.data);
-    return users;
+    const users = await query({
+      query: `{
+        getAllUsers{
+          id description nickname facebook twitter twitch youtube instagram email
+        }
+      }`
+    });
+    return users.getAllUsers;
   } catch (e) {
     rejectWithValue(e);
   }

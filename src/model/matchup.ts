@@ -12,6 +12,7 @@ export interface MatchupList {
 }
 
 export interface Matchup {
+  id?: string;
   author: string;
   champion: string;
   opponent: string;
@@ -26,7 +27,7 @@ export interface Matchup {
 export interface RuneSelection {
   primary?: number;
   secondary?: number;
-  primarySelected: any;
+  primarySelected: number[];
   secondarySelected: number[];
-  modSelected: any;
+  modSelected: number[];
 }

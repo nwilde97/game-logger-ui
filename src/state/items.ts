@@ -1,7 +1,7 @@
 import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {RootState} from './store';
 import {ItemTree} from "../model/item";
-import {fetchItemTree} from "../services/item.service";
+import {query} from "../services/graphql.service";
 
 export interface Itemstate {
   items?: ItemTree;
@@ -14,8 +14,35 @@ const initialState: Itemstate = {
 
 export const fetchItemList = createAsyncThunk('fetchItemList', async (_, { rejectWithValue } ) => {
     try {
-        const items = await fetchItemTree();
-        return items;
+        const items = await query({
+          query: `
+        {
+  getItems {
+    basic {
+      id
+      name
+      imageUrl
+    }
+    epic {
+      id
+      name
+      imageUrl
+    }
+    legendary {
+      id
+      name
+      imageUrl
+    }
+    mythic {
+      id
+      name
+      imageUrl
+    }
+  }
+}
+      `
+        });
+        return items.getItems;
     } catch(e) {
         rejectWithValue(e);
     }

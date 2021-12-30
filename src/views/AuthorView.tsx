@@ -2,21 +2,20 @@ import {Link, RouteComponentProps, useParams} from "@reach/router";
 import styled from "styled-components";
 import {useDispatch, useSelector} from "react-redux";
 import React, {Fragment, useEffect} from "react";
-import {deleteMatchup, fetchAuthorMatchups, selectAuthorMatchups} from "../state/matchups";
-import {RootState} from "../state/store";
-import {fetchChampList, selectChamps} from "../state/champions";
+import {deleteMatchup, fetchAuthorMatchups, selectMatchups} from "../state/matchups";
+import {selectChamps} from "../state/champions";
 import {selectSessionUser} from "../state/session";
 import {
+  Button,
   Container,
   Paper,
-  Toolbar,
-  Typography,
-  Button,
   Table,
+  TableBody,
+  TableCell,
   TableHead,
   TableRow,
-  TableCell,
-  TableBody
+  Toolbar,
+  Typography
 } from "@mui/material";
 import {Add, Cancel, Create, Visibility} from "@mui/icons-material";
 import {selectAllUsers} from "../state/users";
@@ -34,16 +33,13 @@ export const AuthorView = (props: AuthorViewProps) => {
   const users = useSelector(selectAllUsers);
   const authorId = params?.author || user!.id;
   const author: User | undefined = users?.find(user => user.id === authorId);
-  const matchups = useSelector((state: RootState) => selectAuthorMatchups(state, authorId));
+  const matchups = useSelector(selectMatchups);
   const champs = useSelector(selectChamps);
   useEffect(() => {
-    if (!matchups) dispatch(fetchAuthorMatchups(authorId));
-  }, [dispatch, matchups, authorId, user]);
-  useEffect(() => {
-    if (!champs) dispatch(fetchChampList());
-  }, [dispatch, champs]);
+    dispatch(fetchAuthorMatchups(authorId));
+  }, [dispatch, authorId]);
   const remove = (matchup: Matchup) => {
-    dispatch(deleteMatchup([authorId, matchup]));
+    dispatch(deleteMatchup(matchup.id!));
   }
   return (
     <Container maxWidth={"lg"}>
@@ -53,7 +49,7 @@ export const AuthorView = (props: AuthorViewProps) => {
             ?
             <Fragment>
               <Typography variant={"h6"} sx={{flexGrow: 1}}>Here are your log entries</Typography>
-              <Button component={Link} variant={"contained"} to={`/matchup/${user!.id}`} endIcon={<Add/>}>Create
+              <Button component={Link} variant={"contained"} to={`/matchup`} endIcon={<Add/>}>Create
                 New</Button>
             </Fragment>
             : <Typography variant={"h6"}>{author?.nickname}'s entries</Typography>
@@ -74,9 +70,9 @@ export const AuthorView = (props: AuthorViewProps) => {
                 const champ = champs.find(c => c.key === matchup.champion);
                 const opponent = champs.find(c => c.key === matchup.opponent);
                 return (
-                  <TableRow key={`${matchup.champion}o${matchup.opponent}`}>
+                  <TableRow key={`${matchup.id}`}>
                     <TableCell>
-                      <Button component={Link} to={`/matchup/${authorId}/${matchup.champion}/${matchup.opponent}`}>
+                      <Button component={Link} to={`/matchup/${matchup.id}`}>
                         {(user!.id === authorId) && <Create/>}
                         {(user!.id !== authorId) && <Visibility/>}
                       </Button>
